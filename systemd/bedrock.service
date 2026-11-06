@@ -1,0 +1,28 @@
+# /etc/systemd/system/bedrock.service
+# Serviço nativo para execução 24/7 do Bedrock Dedicated Server via Box64 (Dynarec) em ARM64
+
+[Unit]
+Description=Servidor Minecraft Bedrock (Box64 ARM64)
+After=network.target
+
+[Service]
+Type=forking
+User=ubuntu
+# Linux entra na pasta dados antes de ativar o server
+WorkingDirectory=/home/ubuntu/bedrock_server/dados
+Environment="LD_LIBRARY_PATH=."
+
+# Atualiza automaticamente o symlink para apontar sempre para o binário mais recente baixado
+ExecStartPre=/bin/sh -c 'ln -sf $(ls -v bedrock_server-* | tail -n 1) bedrock_atual'
+
+# Inicia o servidor em sessão destacada do GNU Screen utilizando recompilação dinâmica Box64
+ExecStart=/usr/bin/screen -dmS bedrock /usr/local/bin/box64 ./bedrock_atual
+
+# Envia o comando 'stop' ao console para salvar o banco de dados LevelDB com segurança antes de encerrar
+ExecStop=/usr/bin/screen -p 0 -S bedrock -X eval 'stuff "stop\015"'
+
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

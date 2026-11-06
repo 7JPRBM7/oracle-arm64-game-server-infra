@@ -1,0 +1,24 @@
+# Utilizado para provisionamento automatizado, download e extração de novas releases (LATEST)
+# A execução em produção é delegada ao serviço nativo Systemd + Box64 (Dynarec) para performance em ARM64
+services:
+  bds:
+    image: itzg/minecraft-bedrock-server
+    platform: linux/amd64
+    container_name: bedrock_server
+    environment:
+      EULA: "TRUE"
+      VERSION: "LATEST"
+      GAMEMODE: "survival"
+      DIFFICULTY: "hard"
+      SERVER_NAME: "Servidor Dedicado Bedrock - OCI ARM64"
+      LEVEL_NAME: "EpocaNova"
+      ALLOW_CHEATS: "false"
+      ALLOW_LIST: "false"
+    ports:
+      - "19132:19132/udp"
+      - "19133:19133/udp"
+    volumes:
+      - ./dados:/data
+    stdin_open: true
+    tty: true
+    restart: unless-stopped

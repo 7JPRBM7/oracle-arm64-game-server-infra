@@ -1,0 +1,12 @@
+# Ignora dados do mundo, backups e binários pesados.
+dados/
+worlds/
+backups/
+*.zip
+*.tar.gz
+bedrock_server*
+
+# Ignora chaves SSH, credenciais e variáveis de ambiente locais.
+*.key
+*.pem
+*.env
